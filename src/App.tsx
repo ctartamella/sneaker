@@ -86,13 +86,27 @@ function ServerConnectModal() {
 }
 
 function ServerContainer({ serverName }: { serverName: string }) {
+  // Note: we intentionally don't use the global object's ReferenceLatitude/
+  // ReferenceLongitude properties here. Those are only the raw ACMI coordinate
+  // offset, and some non-native exporters (e.g. headless dedicated server
+  // recorders) emit values that don't actually correspond to the map's real
+  // location, which causes the wrong DCSMap to be detected below. Averaging
+  // the resolved position of every known entity is far more reliable: it's
+  // always grounded in where units really are, and a single aircraft near a
+  // border shared by two maps (e.g. Sinai/Syria both cover parts of Israel)
+  // can't skew it the way it could skew a single-entity sample.
   const [refLat, refLng] = serverStore((state) => {
-    const globalObj = state.entities.get(0);
-    if (!globalObj) return [undefined, undefined];
-    return [
-      globalObj.properties.ReferenceLatitude as number | undefined,
-      globalObj.properties.ReferenceLongitude as number | undefined,
-    ];
+    let latSum = 0;
+    let lngSum = 0;
+    let count = 0;
+    state.entities.forEach((it) => {
+      if (it.id === 0 || (it.latitude === 0 && it.longitude === 0)) return;
+      latSum += it.latitude;
+      lngSum += it.longitude;
+      count++;
+    });
+    if (count === 0) return [undefined, undefined];
+    return [latSum / count, lngSum / count];
   });
 
   const {
