@@ -2,6 +2,17 @@
 
 ## Available Endpoints
 
+### Config
+
+Returns frontend-facing configuration values, such as the CARTO maps API key (see the [Map Tiles](/README.md#map-tiles) section of the README).
+
+```
+$ curl https://sneaker.example.com/api/config
+{
+  "maps_api_key": "<your carto api key>"
+}
+```
+
 ### Server List
 
 ```

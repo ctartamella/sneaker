@@ -15,6 +15,7 @@ import { useKeyPress } from "../hooks/useKeyPress";
 import useRenderGeometry from "../hooks/useRenderGeometry";
 import useRenderGroundUnit from "../hooks/useRenderGroundUnits";
 import { alertStore } from "../stores/AlertStore";
+import { configStore } from "../stores/ConfigStore";
 import { serverStore, setSelectedEntityId } from "../stores/ServerStore";
 import { settingsStore } from "../stores/SettingsStore";
 import {
@@ -588,9 +589,10 @@ export function Map({ dcsMap }: { dcsMap: DCSMap }) {
   const isSnapPressed = useKeyPress("s");
 
   const settings = settingsStore();
+  const mapsApiKey = configStore((state) => state.mapsApiKey);
 
   useEffect(() => {
-    if (!mapContainer.current || map.current !== null) {
+    if (!mapContainer.current || map.current !== null || !mapsApiKey) {
       return;
     }
 
@@ -666,9 +668,8 @@ export function Map({ dcsMap }: { dcsMap: DCSMap }) {
       fpsOnInteracting: 60,
       attribution: null,
       baseLayer: new maptalks.TileLayer("base", {
-        urlTemplate:
-          "https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}.png",
-        subdomains: ["a", "b", "c"],
+        urlTemplate: `https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png?key=${mapsApiKey}`,
+        subdomains: ["a", "b", "c", "d"],
         maxCacheSize: 2048,
         hitDetect: false,
       }),
@@ -751,7 +752,7 @@ export function Map({ dcsMap }: { dcsMap: DCSMap }) {
         setDrawBraaStart(null);
       }
     });
-  }, [mapContainer, map]);
+  }, [mapContainer, map, mapsApiKey]);
 
   useEffect(() => {
     if (!map.current) return;

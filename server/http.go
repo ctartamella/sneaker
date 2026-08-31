@@ -55,6 +55,20 @@ func (h *httpServer) getServerMetadata(server *TacViewServerConfig) serverMetada
 	return result
 }
 
+type publicConfig struct {
+	MapsApiKey string `json:"maps_api_key"`
+}
+
+// Returns configuration values needed by the frontend
+func (h *httpServer) getPublicConfig(w http.ResponseWriter, r *http.Request) {
+	result := publicConfig{}
+	if h.config.Maps != nil {
+		result.MapsApiKey = h.config.Maps.ApiKey
+	}
+
+	gores.JSON(w, 200, result)
+}
+
 // Returns a list of available servers
 func (h *httpServer) getServerList(w http.ResponseWriter, r *http.Request) {
 	result := make([]serverMetadata, len(h.config.Servers))
@@ -250,6 +264,7 @@ func Run(config *Config) error {
 		server.serveEmbeddedFile("index.html", w, r)
 	})
 	r.Get("/static/*", server.serveEmbeddedStaticAssets)
+	r.Get("/api/config", server.getPublicConfig)
 	r.Get("/api/servers", server.getServerList)
 	r.Get("/api/servers/{serverName}", server.getServer)
 	r.Get("/api/servers/{serverName}/events", server.streamServerEvents)
