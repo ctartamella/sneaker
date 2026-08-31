@@ -2,15 +2,12 @@
 
 ## Available Endpoints
 
-### Config
+### Map Tile
 
-Returns frontend-facing configuration values, such as the CARTO maps API key (see the [Map Tiles](/README.md#map-tiles) section of the README).
+Proxies a basemap tile from CARTO, attaching the configured API key server-side (see the [Map Tiles](/README.md#map-tiles) section of the README). Returns the raw PNG image.
 
 ```
-$ curl https://sneaker.example.com/api/config
-{
-  "maps_api_key": "<your carto api key>"
-}
+$ curl https://sneaker.example.com/api/maptile/8/135/87.png
 ```
 
 ### Server List

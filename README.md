@@ -38,7 +38,7 @@ Sneaker features a built-in Discord integration which provides basic server info
 
 ### Map Tiles
 
-Sneaker renders its basemap using [CARTO](https://carto.com/basemaps/)'s hosted raster tiles, which require a (free) API key.
+Sneaker renders its basemap using [CARTO](https://carto.com/basemaps/)'s hosted raster tiles, which require a (free) API key. The Sneaker server proxies all tile requests to CARTO itself, attaching the key server-side (`/api/maptile/{z}/{x}/{y}.png`) — the key is never sent to or visible from the browser.
 
 1. Request a **CARTO Basemaps** key using the form at [carto.com/basemaps/apikey](https://carto.com/basemaps/apikey/) (email, the domain(s) you'll host Sneaker on, and a one-line description of what you're building). This is a lightweight, no-approval-queue key — you do **not** need a CARTO account, and you should **not** use an API key generated from a CARTO account/workspace (the SQL API / Maps API v3 key, which looks like a long `eyJ...` JWT). That's a different product and CARTO's basemap tile endpoint will silently reject it, rendering tiles with a repeating "API KEY REQUIRED" watermark instead of failing outright. The key you want back from the form above is a short plain string, not a JWT.
 2. Add the following to your `config.json`:
