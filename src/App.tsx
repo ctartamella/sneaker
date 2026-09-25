@@ -16,6 +16,7 @@ import { TheChannel } from "./dcs/maps/TheChannel";
 import { Nevada } from "./dcs/maps/Nevada";
 import { Kola } from "./dcs/maps/Kola";
 import { Afghanistan } from "./dcs/maps/Afghanistan";
+import { Germany } from "./dcs/maps/Germany";
 import { Server, serverStore } from "./stores/ServerStore";
 import { route } from "./util";
 
@@ -167,6 +168,8 @@ function ServerContainer({ serverName }: { serverName: string }) {
 	dcsMap = Kola;
   } else if (refLat >= 28 && refLat <= 39 && refLng >= 60 && refLng <= 74) {
 	dcsMap = Afghanistan;
+  } else if (refLat >= 47 && refLat <= 56 && refLng >= 5 && refLng <= 16) {
+    dcsMap = Germany;
   } else {
     console.log(refLat, refLng);
     return (
